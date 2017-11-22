@@ -31,7 +31,7 @@
 				Improved validation error messages.
 			</action>
 			<action dev="alexwil" type="update">
-				Upgraded spring boot version.
+				Upgraded spring boot version, surefire plugin and mysql connector.
 			</action>
 		</release>
 	</body>
