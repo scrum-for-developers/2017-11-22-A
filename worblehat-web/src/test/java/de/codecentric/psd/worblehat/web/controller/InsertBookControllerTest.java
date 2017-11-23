@@ -93,4 +93,27 @@ public class InsertBookControllerTest {
         bookDataFormData.setDescription(TEST_BOOK.getDescription());
         bookDataFormData.setYearOfPublication(String.valueOf(TEST_BOOK.getYearOfPublication()));
     }
+
+    @Test
+    public void shouldCreateBookWithWhiteSpaceInISBN() throws Exception {
+        setupFormData();
+        when(bookService.bookExists(TEST_BOOK.getIsbn())).thenReturn(false);
+        bookDataFormData.setIsbn(" " + TEST_BOOK.getIsbn());
+        String navigateTo = insertBookController.processSubmit(bookDataFormData, bindingResult);
+
+        verifyBookIsCreated();
+        assertThat(navigateTo, is("redirect:bookList"));
+    }
+
+    @Test
+    public void shouldCreateBookWithWhiteSpaceInEdition() throws Exception {
+        setupFormData();
+        when(bookService.bookExists(TEST_BOOK.getIsbn())).thenReturn(false);
+        bookDataFormData.setEdition(" " + TEST_BOOK.getEdition());
+        String navigateTo = insertBookController.processSubmit(bookDataFormData, bindingResult);
+
+        verifyBookIsCreated();
+        assertThat(navigateTo, is("redirect:bookList"));
+    }
+
 }

@@ -13,9 +13,11 @@ When a librarian adds a book with title <title>, author <author>, edition <editi
 Then The booklist contains a book with values title <title>, author <author>, year <year>, edition <edition>, isbn <isbn>
 
 Examples:
- 
+
+{trim=false}
 | isbn       | author           | title     | edition   | year  |
-| 0552131075 | Terry Pratchett  | Sourcery  | 1         | 1989  |
+| 0552131075 |Terry Pratchett|Sourcery|1|1989|
+|0552131075|Terry Pratchett|Sourcery| 1         |1989|
 
 
 
