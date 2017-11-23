@@ -54,8 +54,7 @@ public class BookList {
     public void bookListHasBorrowerForBookWithIsbn(@Named("borrower") final String borrower,
                                                    @Named("isbn") final String isbn){
         Book book = DemoBookFactory.createDemoBook().build();
-        Map<String, String> wantedRow = createRowMap(book.getTitle(), book.getAuthor(),
-                String.valueOf(book.getYearOfPublication()), book.getEdition(), isbn, borrower);
+//        Map<String, String> wantsook.getYearOfPublication()), book.getEdition(), isbn, book.getDescription(), borrower);
         seleniumAdapter.gotoPage(Page.BOOKLIST);
         HtmlBookList htmlBookList = seleniumAdapter.getTableContent(PageElement.BOOKLIST);
         HtmlBook htmlBook = htmlBookList.getBookByIsbn(isbn);
@@ -91,7 +90,7 @@ public class BookList {
     }
 
     private HashMap<String, String> createRowMap(final String title, final String author, final String year,
-                                                 final String edition, final String isbn, final String borrower) {
+                                                 final String edition, final String isbn, final String description, final String borrower) {
         return new HashMap<String, String>(){
             {
                 put("Title", title);
@@ -99,6 +98,7 @@ public class BookList {
                 put("Year", year);
                 put("Edition", edition);
                 put("ISBN", isbn);
+                put("Description", description);
                 put("Borrower", borrower);
             }
         };

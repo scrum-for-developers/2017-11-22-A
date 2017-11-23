@@ -41,7 +41,7 @@ public class Library {
 	public void createLibraryWithSingleBookWithGivenIsbn(@Named("isbn")String isbn){
 		Book book = DemoBookFactory.createDemoBook().withISBN(isbn).build();
 		bookService.createBook(book.getTitle(), book.getAuthor(), book.getEdition(),
-				isbn, book.getYearOfPublication());
+				isbn, book.getDescription(), book.getYearOfPublication());
 	}
 
 	@Given("borrower <borrower1> has borrowed books <isbns1>")
@@ -61,7 +61,7 @@ public class Library {
 		for (String isbn: isbnList){
 			Book book = DemoBookFactory.createDemoBook().withISBN(isbn).build();
 			book = bookService.createBook(book.getTitle(), book.getAuthor(), book.getEdition(), isbn,
-					book.getYearOfPublication());
+					book.getDescription(), book.getYearOfPublication());
 			bookService.borrowBook(book, borrower);
 		}
 	}
