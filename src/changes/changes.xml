@@ -34,5 +34,14 @@
 				Upgraded spring boot version, surefire plugin and mysql connector.
 			</action>
 		</release>
+		<release version="1.2" date="2017-11-23"
+				 description="Add Book description">
+			<action dev="alexwil" type="add">
+				Added Book description.
+			</action>
+			<action dev="alexwil" type="update">
+				Show VersionInfo in application.
+			</action>
+		</release>
 	</body>
 </document>

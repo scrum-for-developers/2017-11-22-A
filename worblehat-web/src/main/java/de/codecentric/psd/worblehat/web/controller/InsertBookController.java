@@ -44,7 +44,7 @@ public class InsertBookController {
 			return "insertBooks";
 		} else {
 			bookService.createBook(bookDataFormData.getTitle(), bookDataFormData.getAuthor(),
-					bookDataFormData.getEdition(), bookDataFormData.getIsbn(),
+					bookDataFormData.getEdition(), bookDataFormData.getIsbn(), bookDataFormData.getDescription(),
 					Integer.parseInt(bookDataFormData.getYearOfPublication()));
 			LOG.debug("new book instance is created: " + bookDataFormData.getIsbn());
 			return "redirect:bookList";
