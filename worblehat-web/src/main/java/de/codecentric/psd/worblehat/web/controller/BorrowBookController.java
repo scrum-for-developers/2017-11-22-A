@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.Optional;
 
 /**
  * Controller for BorrowingBook
@@ -43,13 +44,13 @@ public class BorrowBookController {
 		if (result.hasErrors()) {
 			return "borrow";
 		}
-		Book book = bookService.findBookByIsbn(borrowFormData.getIsbn());
-		if(book == null) {
+		Optional<Book> book = bookService.findFirstBookByIsbn(borrowFormData.getIsbn());
+		if(!book.isPresent()) {
 			result.rejectValue("isbn", "notBorrowable");
 			return "borrow";
 		}
 		try {
-			bookService.borrowBook(book, borrowFormData.getEmail());
+			bookService.borrowBook(book.get(), borrowFormData.getEmail());
 		} catch (BookAlreadyBorrowedException e) {
 			result.rejectValue("isbn", "internalError");
 			return "borrow";

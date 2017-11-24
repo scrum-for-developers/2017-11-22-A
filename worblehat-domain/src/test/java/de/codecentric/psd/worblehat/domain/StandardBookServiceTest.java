@@ -1,6 +1,7 @@
 package de.codecentric.psd.worblehat.domain;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -12,9 +13,7 @@ import org.mockito.ArgumentCaptor;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class StandardBookServiceTest {
 
@@ -103,5 +102,59 @@ public class StandardBookServiceTest {
 		bookService.deleteAllBooks();
 		verify(bookRepository).deleteAll();
 		verify(borrowingRepository).deleteAll();
+	}
+
+	@Test
+	public void shouldCreateTwoBooks() throws Exception {
+		ArgumentCaptor<Book> bookArgumentCaptor = ArgumentCaptor.forClass(Book.class);
+		bookService.createBook(TEST_BOOK.getTitle(), TEST_BOOK.getAuthor(), TEST_BOOK.getEdition(),
+				TEST_BOOK.getIsbn(), TEST_BOOK.getDescription(), TEST_BOOK.getYearOfPublication());
+
+		bookService.createBook(TEST_BOOK.getTitle(), TEST_BOOK.getAuthor(), TEST_BOOK.getEdition(),
+				TEST_BOOK.getIsbn(), TEST_BOOK.getDescription(), TEST_BOOK.getYearOfPublication());
+		verify(bookRepository,times(2)).save(bookArgumentCaptor.capture());
+	}
+
+	@Test
+	public void shouldRejectBooksWithDifferentTitlesWithSameISBN() throws Exception {
+		ArgumentCaptor<Book> bookArgumentCaptor = ArgumentCaptor.forClass(Book.class);
+		when(bookRepository.findBooksByIsbn(TEST_BOOK.getIsbn())).thenReturn(Arrays.asList(TEST_BOOK));
+
+		bookService.createBook(TEST_BOOK.getTitle()+"X", TEST_BOOK.getAuthor(), TEST_BOOK.getEdition(),
+				TEST_BOOK.getIsbn(), TEST_BOOK.getDescription(), TEST_BOOK.getYearOfPublication());
+		verify(bookRepository,times(0)).save(bookArgumentCaptor.capture());
+	}
+
+	@Test
+	public void shouldRejectBooksWithDifferentAuthorsWithSameISBN() throws Exception {
+		ArgumentCaptor<Book> bookArgumentCaptor = ArgumentCaptor.forClass(Book.class);
+		when(bookRepository.findBooksByIsbn(TEST_BOOK.getIsbn())).thenReturn(Arrays.asList(TEST_BOOK));
+
+		bookService.createBook(TEST_BOOK.getTitle(), TEST_BOOK.getAuthor()+"X", TEST_BOOK.getEdition(),
+				TEST_BOOK.getIsbn(), TEST_BOOK.getDescription(), TEST_BOOK.getYearOfPublication());
+		verify(bookRepository,times(0)).save(bookArgumentCaptor.capture());
+	}
+
+	@Test
+	public void shouldRejectBooksWithDifferentAuthorsWithSameISBNAndBorrowing() throws Exception {
+		ArgumentCaptor<Book> bookArgumentCaptor = ArgumentCaptor.forClass(Book.class);
+		Borrowing borrowing = new Borrowing(TEST_BOOK, BORROWER_EMAIL, NOW);
+		TEST_BOOK.setBorrowing(borrowing);
+		when(bookRepository.findBooksByIsbn(TEST_BOOK.getIsbn())).thenReturn(Arrays.asList(TEST_BOOK));
+
+		bookService.createBook(TEST_BOOK.getTitle(), TEST_BOOK.getAuthor()+"X", TEST_BOOK.getEdition(),
+				TEST_BOOK.getIsbn(), TEST_BOOK.getDescription(), TEST_BOOK.getYearOfPublication());
+		verify(bookRepository,times(0)).save(bookArgumentCaptor.capture());
+	}
+
+	@Test
+	public void shouldNotCreateBookWithEmptyISBN() throws Exception {
+		ArgumentCaptor<Book> bookArgumentCaptor = ArgumentCaptor.forClass(Book.class);
+		bookService.createBook(TEST_BOOK.getTitle(), TEST_BOOK.getAuthor(), TEST_BOOK.getEdition(),
+				TEST_BOOK.getIsbn(), TEST_BOOK.getDescription(), TEST_BOOK.getYearOfPublication());
+
+		bookService.createBook(TEST_BOOK.getTitle(), TEST_BOOK.getAuthor(), TEST_BOOK.getEdition(),
+				TEST_BOOK.getIsbn(), TEST_BOOK.getDescription(), TEST_BOOK.getYearOfPublication());
+		verify(bookRepository,times(2)).save(bookArgumentCaptor.capture());
 	}
 }

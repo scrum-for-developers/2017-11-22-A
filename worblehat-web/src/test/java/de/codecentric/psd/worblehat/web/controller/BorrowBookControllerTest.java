@@ -1,6 +1,7 @@
 package de.codecentric.psd.worblehat.web.controller;
 
 import java.util.HashMap;
+import java.util.Optional;
 
 import de.codecentric.psd.worblehat.domain.Book;
 import de.codecentric.psd.worblehat.domain.BookAlreadyBorrowedException;
@@ -18,6 +19,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -65,7 +67,7 @@ public class BorrowBookControllerTest {
 
     @Test
     public void shouldRejectBorrowingIfBookDoesNotExist() throws Exception {
-        when(bookService.findBookByIsbn(TEST_BOOK.getIsbn())).thenReturn(null);
+        when(bookService.findFirstBookByIsbn(any())).thenReturn(Optional.empty());
 
         String navigateTo = borrowBookController.processSubmit(bookBorrowFormData, bindingResult);
 
@@ -77,7 +79,7 @@ public class BorrowBookControllerTest {
     public void shouldRejectAlreadyBorrowedBooks() throws Exception {
         bookBorrowFormData.setEmail(BORROWER_EMAIL);
         bookBorrowFormData.setIsbn(TEST_BOOK.getIsbn());
-        when(bookService.findBookByIsbn(TEST_BOOK.getIsbn())).thenReturn(TEST_BOOK);
+        when(bookService.findFirstBookByIsbn(TEST_BOOK.getIsbn())).thenReturn(Optional.of(TEST_BOOK));
         doThrow(BookAlreadyBorrowedException.class).when(bookService).borrowBook(TEST_BOOK, BORROWER_EMAIL);
 
         String navigateTo = borrowBookController.processSubmit(bookBorrowFormData, bindingResult);
@@ -90,7 +92,7 @@ public class BorrowBookControllerTest {
     public void shouldNavigateHomeOnSuccess() throws Exception {
         bookBorrowFormData.setEmail(BORROWER_EMAIL);
         bookBorrowFormData.setIsbn(TEST_BOOK.getIsbn());
-        when(bookService.findBookByIsbn(TEST_BOOK.getIsbn())).thenReturn(TEST_BOOK);
+        when(bookService.findFirstBookByIsbn(TEST_BOOK.getIsbn())).thenReturn(Optional.of(TEST_BOOK));
 
         String navigateTo = borrowBookController.processSubmit(bookBorrowFormData, bindingResult);
 

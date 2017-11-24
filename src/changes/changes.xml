@@ -48,6 +48,7 @@
 			<action dev="alexwil" type="add">
 				Remove leeding and trailing white spaces from input.
 			</action>
+
 		</release>
 	</body>
 </document>

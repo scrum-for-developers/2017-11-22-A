@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The domain service class for book operations.
@@ -43,15 +43,15 @@ public class StandardBookService implements BookService {
         if (borrowing != null) {
             throw new BookAlreadyBorrowedException("Book is already borrowed");
         } else {
-            book =findBookByIsbn(book.getIsbn());
             borrowing = new Borrowing(book, borrowerEmail, new DateTime());
             borrowingRepository.save(borrowing);
         }
     }
 
     @Override
-    public Book findBookByIsbn(String isbn) {
-        return bookRepository.findBookByIsbn(isbn); //null if not found
+    public Optional<Book> findFirstBookByIsbn(String isbn) {
+
+        return bookRepository.findBooksByIsbn(isbn).stream().findFirst();
     }
 
     @Override
@@ -63,12 +63,17 @@ public class StandardBookService implements BookService {
     @Override
     public Book createBook(String title, String author, String edition, String isbn, String description, int yearOfPublication) {
         Book book = new Book(title, author, edition, isbn, description, yearOfPublication);
+        Optional<Book> bookByIsbn = findFirstBookByIsbn(book.getIsbn());
+
+        if(bookByIsbn.isPresent() && !book.isSameActualBook(bookByIsbn.get())){
+            return null;
+        }
         return bookRepository.save(book);
     }
 
     @Override
     public boolean bookExists(String isbn) {
-        return findBookByIsbn(isbn) != null;
+        return findFirstBookByIsbn(isbn) != null;
     }
 
     @Override
@@ -76,6 +81,4 @@ public class StandardBookService implements BookService {
         borrowingRepository.deleteAll();
         bookRepository.deleteAll();
     }
-
-
 }

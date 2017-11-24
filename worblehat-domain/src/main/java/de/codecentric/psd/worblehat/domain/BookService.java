@@ -1,6 +1,7 @@
 package de.codecentric.psd.worblehat.domain;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The interface of the domain service for books.
@@ -11,7 +12,7 @@ public interface BookService {
 
 	void borrowBook(Book book, String borrower) throws BookAlreadyBorrowedException;
 
-	Book findBookByIsbn(String isbn);
+	Optional<Book> findFirstBookByIsbn(String isbn);
 
 	List<Book> findAllBooks();
 

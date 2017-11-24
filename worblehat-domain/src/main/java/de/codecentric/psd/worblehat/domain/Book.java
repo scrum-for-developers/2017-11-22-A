@@ -104,6 +104,11 @@ public class Book implements Serializable {
 	public void setBorrowing(Borrowing borrowing) {
 		this.borrowing = borrowing;
 	}
+
+	public Borrowing getBorrowing() {
+		return borrowing;
+	}
+
 	public String getDescription() {
 		return description;
 	}
@@ -112,4 +117,24 @@ public class Book implements Serializable {
 		this.description = description;
 	}
 
+	@Override
+	protected Book clone() {
+		Book book = new Book(
+				title,
+				author,
+				edition,
+				isbn,
+				description,
+				yearOfPublication
+		);
+		book.setBorrowing(borrowing);
+		return book;
+	}
+
+	public boolean isSameActualBook(Book book){
+		if (!title.equals(book.title)) return false;
+		if (!author.equals(book.author)) return false;
+		if (!isbn.equals(book.isbn)) return false;
+		return true;
+	}
 }
